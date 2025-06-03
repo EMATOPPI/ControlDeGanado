@@ -12,9 +12,11 @@ public class Animal {
 
     private String nombre;
     private String tipo;
+    private String raza;  // Añadido para coincidir con el frontend
     private String color;
     private String descripcion;
     private Double peso;
+    private Boolean activo = true;  // Valor predeterminado: true
 
     // Constructor vacío
     public Animal() {}
@@ -29,6 +31,9 @@ public class Animal {
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
 
+    public String getRaza() { return raza; }
+    public void setRaza(String raza) { this.raza = raza; }
+
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
 
@@ -37,4 +42,12 @@ public class Animal {
 
     public Double getPeso() { return peso; }
     public void setPeso(Double peso) { this.peso = peso; }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
 }

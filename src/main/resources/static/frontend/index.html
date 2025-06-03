@@ -2,48 +2,341 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Ganado</title>
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<h1>Control de Ganado</h1>
+<div class="container">
+    <header>
+        <h1>Sistema de Control de Ganado</h1>
+        <nav>
+            <ul>
+                <li><a href="#animales-section">Animales</a></li>
+                <li><a href="#compras-section">Compras</a></li>
+                <li><a href="#ventas-section">Ventas</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<section id="animales-section">
-    <h2>Animales</h2>
-    <ul id="animales-list"></ul>
-    <h3>Agregar Animal</h3>
-    <form id="animal-form">
-        <input type="text" id="animal-nombre" placeholder="Nombre" required />
-        <input type="text" id="animal-raza" placeholder="Raza" required />
-        <input type="number" id="animal-peso" placeholder="Peso" required />
-        <button type="submit">Agregar</button>
-    </form>
-</section>
+    <section id="animales-section">
+        <h2>Registro de Animales</h2>
+        <div class="card">
+            <h3>Listado de Animales</h3>
+            <ul id="animales-list" class="list"></ul>
+        </div>
 
-<section id="compras-section">
-    <h2>Compras</h2>
-    <ul id="compras-list"></ul>
-    <h3>Agregar Compra</h3>
-    <form id="compra-form">
-        <input type="number" id="compra-animalId" placeholder="ID Animal" required />
-        <input type="number" id="compra-cantidad" placeholder="Cantidad" required />
-        <input type="number" id="compra-precio" placeholder="Precio" required />
-        <button type="submit">Agregar</button>
-    </form>
-</section>
+        <div class="card">
+            <h3>Formulario de Animal</h3>
+            <form id="animal-form" class="form">
+                <div class="form-group">
+                    <label for="animal-nombre">Nombre:</label>
+                    <input type="text" id="animal-nombre" placeholder="Nombre" required />
+                </div>
+                <div class="form-group">
+                    <label for="animal-tipo">Tipo:</label>
+                    <input type="text" id="animal-tipo" placeholder="Tipo (ej. Bovino, Porcino)" required />
+                </div>
+                <div class="form-group">
+                    <label for="animal-raza">Raza:</label>
+                    <input type="text" id="animal-raza" placeholder="Raza" />
+                </div>
+                <div class="form-group">
+                    <label for="animal-color">Color:</label>
+                    <input type="text" id="animal-color" placeholder="Color" />
+                </div>
+                <div class="form-group">
+                    <label for="animal-descripcion">Descripción:</label>
+                    <textarea id="animal-descripcion" placeholder="Descripción"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="animal-peso">Peso (kg):</label>
+                    <input type="number" id="animal-peso" placeholder="Peso en kg" step="0.01" min="0" required />
+                </div>
+                <button type="submit">Agregar</button>
+                <button type="reset" class="secondary-btn">Limpiar</button>
+            </form>
+        </div>
+    </section>
 
-<section id="ventas-section">
-    <h2>Ventas</h2>
-    <ul id="ventas-list"></ul>
-    <h3>Agregar Venta</h3>
-    <form id="venta-form">
-        <input type="number" id="venta-animalId" placeholder="ID Animal" required />
-        <input type="number" id="venta-cantidad" placeholder="Cantidad" required />
-        <input type="number" id="venta-precio" placeholder="Precio" required />
-        <button type="submit">Agregar</button>
-    </form>
-</section>
+    <section id="compras-section">
+        <h2>Registro de Compras</h2>
+        <div class="card">
+            <h3>Listado de Compras</h3>
+            <ul id="compras-list" class="list"></ul>
+        </div>
 
+        <div class="card">
+            <h3>Formulario de Compra</h3>
+            <form id="compra-form" class="form">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="compra-tipo">Tipo de Compra:</label>
+                        <select id="compra-tipo" class="form-control" required>
+                            <option value="UNITARIA">Compra Unitaria</option>
+                            <option value="LOTE">Compra por Lote</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="compra-moneda">Moneda:</label>
+                        <select id="compra-moneda" class="form-control">
+                            <option value="PYG" selected>Guaraníes (₲)</option>
+                            <option value="USD">Dólares ($)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row animal-unitario">
+                    <div class="form-group col-md-12">
+                        <label for="compra-animalId">Animal:</label>
+                        <select id="compra-animalId" class="form-control animal-select" required></select>
+                    </div>
+                </div>
+
+                <div class="form-row animal-lote" style="display: none;">
+                    <div class="form-group col-md-6">
+                        <label for="compra-tipo-animal">Tipo de Animal:</label>
+                        <input type="text" id="compra-tipo-animal" class="form-control" placeholder="Ej: Bovino, Porcino">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="compra-raza-animal">Raza:</label>
+                        <input type="text" id="compra-raza-animal" class="form-control" placeholder="Opcional">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="compra-cantidad">Cantidad:</label>
+                        <input type="number" id="compra-cantidad" class="form-control" value="1" min="1" required>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="compra-precio-unitario">Precio Unitario:</label>
+                        <div class="input-group">
+                            <input type="number" id="compra-precio-unitario" class="form-control currency-input" step="1" min="0" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text currency-symbol">₲</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="compra-precio-total">Precio Total:</label>
+                        <div class="input-group">
+                            <input type="number" id="compra-precio-total" class="form-control currency-input" step="1" min="0" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text currency-symbol">₲</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="compra-peso-total">Peso Total (kg):</label>
+                        <input type="number" id="compra-peso-total" class="form-control" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="compra-fecha">Fecha:</label>
+                        <input type="date" id="compra-fecha" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="compra-descripcion">Descripción:</label>
+                    <textarea id="compra-descripcion" class="form-control" rows="3" placeholder="Información adicional"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-sync"></i> Limpiar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="ventas-section">
+        <h2>Registro de Ventas</h2>
+        <div class="card">
+            <h3>Listado de Ventas</h3>
+            <ul id="ventas-list" class="list"></ul>
+        </div>
+
+        <div class="card">
+            <h3>Formulario de Venta</h3>
+            <form id="venta-form" class="form">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="venta-tipo">Tipo de Venta:</label>
+                        <select id="venta-tipo" class="form-control" required>
+                            <option value="UNITARIA">Venta Unitaria</option>
+                            <option value="LOTE">Venta por Lote</option>
+                            <option value="POR_KILO">Venta por Kilo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="venta-moneda">Moneda:</label>
+                        <select id="venta-moneda" class="form-control">
+                            <option value="PYG" selected>Guaraníes (₲)</option>
+                            <option value="USD">Dólares ($)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4 venta-kilo-group" style="display: none;">
+                        <label for="venta-precio-kilo">Precio por Kilo:</label>
+                        <div class="input-group">
+                            <input type="number" id="venta-precio-kilo" class="form-control currency-input" step="1" min="0">
+                            <div class="input-group-append">
+                                <span class="input-group-text currency-symbol">₲</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row animal-unitario">
+                    <div class="form-group col-md-12">
+                        <label for="venta-animalId">Animal:</label>
+                        <select id="venta-animalId" class="form-control animal-select" required></select>
+                    </div>
+                </div>
+
+                <div class="form-row animal-lote" style="display: none;">
+                    <div class="form-group col-md-6">
+                        <label for="venta-tipo-animal">Tipo de Animal:</label>
+                        <input type="text" id="venta-tipo-animal" class="form-control" placeholder="Ej: Bovino, Porcino">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="venta-raza-animal">Raza:</label>
+                        <input type="text" id="venta-raza-animal" class="form-control" placeholder="Opcional">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="venta-cantidad">Cantidad:</label>
+                        <input type="number" id="venta-cantidad" class="form-control" value="1" min="1" required>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="venta-precio-unitario">Precio Unitario:</label>
+                        <div class="input-group">
+                            <input type="number" id="venta-precio-unitario" class="form-control currency-input" step="1" min="0" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text currency-symbol">₲</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="venta-precio-total">Precio Total:</label>
+                        <div class="input-group">
+                            <input type="number" id="venta-precio-total" class="form-control currency-input" step="1" min="0" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text currency-symbol">₲</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="venta-peso-total">Peso Total (kg):</label>
+                        <input type="number" id="venta-peso-total" class="form-control" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="venta-descuento">Descuento (%):</label>
+                        <input type="number" id="venta-descuento" class="form-control" value="0" min="0" max="100" step="0.01">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="venta-descuento-mo">Descuento Materia Orgánica (%):</label>
+                        <input type="number" id="venta-descuento-mo" class="form-control" value="0" min="0" max="100" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="venta-fecha">Fecha:</label>
+                        <input type="date" id="venta-fecha" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="venta-descripcion">Descripción:</label>
+                    <textarea id="venta-descripcion" class="form-control" rows="3" placeholder="Información adicional"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-sync"></i> Limpiar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section id="reportes-section">
+        <h2>Reportes y Estadísticas</h2>
+
+        <div class="card">
+            <h3>Resumen del Periodo</h3>
+            <div class="form-inline">
+                <div class="form-group">
+                    <label for="reporte-fecha-inicio">Fecha Inicio:</label>
+                    <input type="date" id="reporte-fecha-inicio" />
+                </div>
+                <div class="form-group">
+                    <label for="reporte-fecha-fin">Fecha Fin:</label>
+                    <input type="date" id="reporte-fecha-fin" />
+                </div>
+                <button id="btn-generar-reporte" class="primary-btn">Generar Reporte</button>
+            </div>
+            <div id="reporte-resumen" class="reporte-container"></div>
+        </div>
+
+        <div class="cards-container">
+            <div class="card">
+                <h3>Top Animales por Ventas</h3>
+                <div id="top-ventas" class="reporte-container"></div>
+            </div>
+
+            <div class="card">
+                <h3>Top Animales por Compras</h3>
+                <div id="top-compras" class="reporte-container"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Rentabilidad</h3>
+            <div id="rentabilidad-container" class="reporte-container">
+                <div class="rentabilidad-valor">
+                    <span>Rentabilidad del periodo: </span>
+                    <span id="rentabilidad-valor">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>Sistema de Control de Ganado &copy; 2025</p>
+</footer>
+
+<script src="js/app.js"></script>
+
+<!-- Añade esto antes del cierre del body -->
+<div id="loading-bar" class="loading-bar"></div>
+<script src="js/toast.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

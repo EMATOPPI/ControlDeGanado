@@ -31,6 +31,13 @@ public class AnimalService {
     }
 
     public void eliminarAnimal(Long id) {
-        animalRepository.deleteById(id);
+        // En lugar de eliminar físicamente
+        // animalRepository.deleteById(id);
+
+        // Realizamos una eliminación lógica
+        animalRepository.findById(id).ifPresent(animal -> {
+            animal.setActivo(false);
+            animalRepository.save(animal);
+        });
     }
 }

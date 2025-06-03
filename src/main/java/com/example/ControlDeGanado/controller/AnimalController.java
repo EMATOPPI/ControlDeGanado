@@ -37,12 +37,28 @@ public class AnimalController {
         Animal animal = new Animal();
         animal.setNombre(animalDTO.getNombre());
         animal.setTipo(animalDTO.getTipo());
+        animal.setRaza(animalDTO.getRaza());  // Nuevo campo raza
         animal.setColor(animalDTO.getColor());
         animal.setDescripcion(animalDTO.getDescripcion());
         animal.setPeso(animalDTO.getPeso());
 
         Animal guardado = animalService.guardarAnimal(animal);
         return new ResponseEntity<>(guardado, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Animal> actualizar(@PathVariable Long id, @Valid @RequestBody AnimalDTO animalDTO) {
+        return animalService.obtenerPorId(id)
+                .map(animal -> {
+                    animal.setNombre(animalDTO.getNombre());
+                    animal.setTipo(animalDTO.getTipo());
+                    animal.setRaza(animalDTO.getRaza());
+                    animal.setColor(animalDTO.getColor());
+                    animal.setDescripcion(animalDTO.getDescripcion());
+                    animal.setPeso(animalDTO.getPeso());
+                    return new ResponseEntity<>(animalService.guardarAnimal(animal), HttpStatus.OK);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

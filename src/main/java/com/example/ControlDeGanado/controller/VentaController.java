@@ -43,15 +43,40 @@ public class VentaController {
         }
 
         Venta venta = new Venta();
-        venta.setFecha(ventaDTO.getFecha());
+        venta.setFecha(ventaDTO.getFecha() != null ? ventaDTO.getFecha() : java.time.LocalDate.now());
         venta.setPrecioTotal(ventaDTO.getPrecioTotal());
         venta.setPesoTotal(ventaDTO.getPesoTotal());
         venta.setPorcentajeDescuento(ventaDTO.getPorcentajeDescuento());
+        venta.setCantidad(ventaDTO.getCantidad());
         venta.setAnimal(animal);
         venta.setDescripcion(ventaDTO.getDescripcion());
 
         Venta guardada = ventaService.guardarVenta(venta);
         return new ResponseEntity<>(guardada, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody VentaDTO ventaDTO) {
+        return ventaService.obtenerPorId(id)
+                .map(venta -> {
+                    Animal animal = ventaService.obtenerAnimalPorId(ventaDTO.getAnimalId())
+                            .orElse(null);
+
+                    if (animal == null) {
+                        return ResponseEntity.badRequest().body("Animal no encontrado");
+                    }
+
+                    venta.setFecha(ventaDTO.getFecha());
+                    venta.setPrecioTotal(ventaDTO.getPrecioTotal());
+                    venta.setPesoTotal(ventaDTO.getPesoTotal());
+                    venta.setPorcentajeDescuento(ventaDTO.getPorcentajeDescuento());
+                    venta.setCantidad(ventaDTO.getCantidad());
+                    venta.setAnimal(animal);
+                    venta.setDescripcion(ventaDTO.getDescripcion());
+
+                    return new ResponseEntity<>(ventaService.guardarVenta(venta), HttpStatus.OK);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,5 @@
 package com.example.ControlDeGanado.controller;
 
-
 import com.example.ControlDeGanado.dto.CompraDTO;
 import com.example.ControlDeGanado.model.Animal;
 import com.example.ControlDeGanado.model.Compra;
@@ -44,13 +43,36 @@ public class CompraController {
         }
 
         Compra compra = new Compra();
-        compra.setFecha(compraDTO.getFecha());
+        compra.setFecha(compraDTO.getFecha() != null ? compraDTO.getFecha() : java.time.LocalDate.now());
         compra.setPrecioTotal(compraDTO.getPrecioTotal());
+        compra.setCantidad(compraDTO.getCantidad());
         compra.setAnimal(animal);
         compra.setDescripcion(compraDTO.getDescripcion());
 
         Compra guardada = compraService.guardarCompra(compra);
         return new ResponseEntity<>(guardada, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody CompraDTO compraDTO) {
+        return compraService.obtenerPorId(id)
+                .map(compra -> {
+                    Animal animal = compraService.obtenerAnimalPorId(compraDTO.getAnimalId())
+                            .orElse(null);
+
+                    if (animal == null) {
+                        return ResponseEntity.badRequest().body("Animal no encontrado");
+                    }
+
+                    compra.setFecha(compraDTO.getFecha());
+                    compra.setPrecioTotal(compraDTO.getPrecioTotal());
+                    compra.setCantidad(compraDTO.getCantidad());
+                    compra.setAnimal(animal);
+                    compra.setDescripcion(compraDTO.getDescripcion());
+
+                    return new ResponseEntity<>(compraService.guardarCompra(compra), HttpStatus.OK);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
