@@ -1,342 +1,988 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Ganado</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <title>Control de Ganado - Sistema Completo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: #2c5530;
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2c5530;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: #2c5530;
+            color: white;
+        }
+
+        .nav-tab.active {
+            background: #2c5530;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c5530;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2c5530;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #2c5530;
+            box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(44, 85, 48, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        .data-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .data-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 5px solid #2c5530;
+            transition: all 0.3s ease;
+        }
+
+        .data-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .data-card-title {
+            font-weight: 700;
+            color: #2c5530;
+            font-size: 1.2rem;
+        }
+
+        .data-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .data-card-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .data-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-field-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+
+        .data-field-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(44, 85, 48, 0.3);
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .stat-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2c5530;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>Sistema de Control de Ganado</h1>
-        <nav>
-            <ul>
-                <li><a href="#animales-section">Animales</a></li>
-                <li><a href="#compras-section">Compras</a></li>
-                <li><a href="#ventas-section">Ventas</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="animales-section">
-        <h2>Registro de Animales</h2>
-        <div class="card">
-            <h3>Listado de Animales</h3>
-            <ul id="animales-list" class="list"></ul>
-        </div>
-
-        <div class="card">
-            <h3>Formulario de Animal</h3>
-            <form id="animal-form" class="form">
-                <div class="form-group">
-                    <label for="animal-nombre">Nombre:</label>
-                    <input type="text" id="animal-nombre" placeholder="Nombre" required />
-                </div>
-                <div class="form-group">
-                    <label for="animal-tipo">Tipo:</label>
-                    <input type="text" id="animal-tipo" placeholder="Tipo (ej. Bovino, Porcino)" required />
-                </div>
-                <div class="form-group">
-                    <label for="animal-raza">Raza:</label>
-                    <input type="text" id="animal-raza" placeholder="Raza" />
-                </div>
-                <div class="form-group">
-                    <label for="animal-color">Color:</label>
-                    <input type="text" id="animal-color" placeholder="Color" />
-                </div>
-                <div class="form-group">
-                    <label for="animal-descripcion">Descripción:</label>
-                    <textarea id="animal-descripcion" placeholder="Descripción"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="animal-peso">Peso (kg):</label>
-                    <input type="number" id="animal-peso" placeholder="Peso en kg" step="0.01" min="0" required />
-                </div>
-                <button type="submit">Agregar</button>
-                <button type="reset" class="secondary-btn">Limpiar</button>
-            </form>
-        </div>
-    </section>
-
-    <section id="compras-section">
-        <h2>Registro de Compras</h2>
-        <div class="card">
-            <h3>Listado de Compras</h3>
-            <ul id="compras-list" class="list"></ul>
-        </div>
-
-        <div class="card">
-            <h3>Formulario de Compra</h3>
-            <form id="compra-form" class="form">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="compra-tipo">Tipo de Compra:</label>
-                        <select id="compra-tipo" class="form-control" required>
-                            <option value="UNITARIA">Compra Unitaria</option>
-                            <option value="LOTE">Compra por Lote</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="compra-moneda">Moneda:</label>
-                        <select id="compra-moneda" class="form-control">
-                            <option value="PYG" selected>Guaraníes (₲)</option>
-                            <option value="USD">Dólares ($)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row animal-unitario">
-                    <div class="form-group col-md-12">
-                        <label for="compra-animalId">Animal:</label>
-                        <select id="compra-animalId" class="form-control animal-select" required></select>
-                    </div>
-                </div>
-
-                <div class="form-row animal-lote" style="display: none;">
-                    <div class="form-group col-md-6">
-                        <label for="compra-tipo-animal">Tipo de Animal:</label>
-                        <input type="text" id="compra-tipo-animal" class="form-control" placeholder="Ej: Bovino, Porcino">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="compra-raza-animal">Raza:</label>
-                        <input type="text" id="compra-raza-animal" class="form-control" placeholder="Opcional">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="compra-cantidad">Cantidad:</label>
-                        <input type="number" id="compra-cantidad" class="form-control" value="1" min="1" required>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="compra-precio-unitario">Precio Unitario:</label>
-                        <div class="input-group">
-                            <input type="number" id="compra-precio-unitario" class="form-control currency-input" step="1" min="0" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text currency-symbol">₲</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="compra-precio-total">Precio Total:</label>
-                        <div class="input-group">
-                            <input type="number" id="compra-precio-total" class="form-control currency-input" step="1" min="0" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text currency-symbol">₲</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="compra-peso-total">Peso Total (kg):</label>
-                        <input type="number" id="compra-peso-total" class="form-control" step="0.01" min="0">
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="compra-fecha">Fecha:</label>
-                        <input type="date" id="compra-fecha" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="compra-descripcion">Descripción:</label>
-                    <textarea id="compra-descripcion" class="form-control" rows="3" placeholder="Información adicional"></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Agregar
-                    </button>
-                    <button type="reset" class="btn btn-secondary">
-                        <i class="fas fa-sync"></i> Limpiar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section id="ventas-section">
-        <h2>Registro de Ventas</h2>
-        <div class="card">
-            <h3>Listado de Ventas</h3>
-            <ul id="ventas-list" class="list"></ul>
-        </div>
-
-        <div class="card">
-            <h3>Formulario de Venta</h3>
-            <form id="venta-form" class="form">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="venta-tipo">Tipo de Venta:</label>
-                        <select id="venta-tipo" class="form-control" required>
-                            <option value="UNITARIA">Venta Unitaria</option>
-                            <option value="LOTE">Venta por Lote</option>
-                            <option value="POR_KILO">Venta por Kilo</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="venta-moneda">Moneda:</label>
-                        <select id="venta-moneda" class="form-control">
-                            <option value="PYG" selected>Guaraníes (₲)</option>
-                            <option value="USD">Dólares ($)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-4 venta-kilo-group" style="display: none;">
-                        <label for="venta-precio-kilo">Precio por Kilo:</label>
-                        <div class="input-group">
-                            <input type="number" id="venta-precio-kilo" class="form-control currency-input" step="1" min="0">
-                            <div class="input-group-append">
-                                <span class="input-group-text currency-symbol">₲</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row animal-unitario">
-                    <div class="form-group col-md-12">
-                        <label for="venta-animalId">Animal:</label>
-                        <select id="venta-animalId" class="form-control animal-select" required></select>
-                    </div>
-                </div>
-
-                <div class="form-row animal-lote" style="display: none;">
-                    <div class="form-group col-md-6">
-                        <label for="venta-tipo-animal">Tipo de Animal:</label>
-                        <input type="text" id="venta-tipo-animal" class="form-control" placeholder="Ej: Bovino, Porcino">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="venta-raza-animal">Raza:</label>
-                        <input type="text" id="venta-raza-animal" class="form-control" placeholder="Opcional">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="venta-cantidad">Cantidad:</label>
-                        <input type="number" id="venta-cantidad" class="form-control" value="1" min="1" required>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="venta-precio-unitario">Precio Unitario:</label>
-                        <div class="input-group">
-                            <input type="number" id="venta-precio-unitario" class="form-control currency-input" step="1" min="0" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text currency-symbol">₲</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="venta-precio-total">Precio Total:</label>
-                        <div class="input-group">
-                            <input type="number" id="venta-precio-total" class="form-control currency-input" step="1" min="0" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text currency-symbol">₲</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="venta-peso-total">Peso Total (kg):</label>
-                        <input type="number" id="venta-peso-total" class="form-control" step="0.01" min="0">
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="venta-descuento">Descuento (%):</label>
-                        <input type="number" id="venta-descuento" class="form-control" value="0" min="0" max="100" step="0.01">
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="venta-descuento-mo">Descuento Materia Orgánica (%):</label>
-                        <input type="number" id="venta-descuento-mo" class="form-control" value="0" min="0" max="100" step="0.01">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="venta-fecha">Fecha:</label>
-                        <input type="date" id="venta-fecha" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="venta-descripcion">Descripción:</label>
-                    <textarea id="venta-descripcion" class="form-control" rows="3" placeholder="Información adicional"></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Agregar
-                    </button>
-                    <button type="reset" class="btn btn-secondary">
-                        <i class="fas fa-sync"></i> Limpiar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </section>
-    <section id="reportes-section">
-        <h2>Reportes y Estadísticas</h2>
-
-        <div class="card">
-            <h3>Resumen del Periodo</h3>
-            <div class="form-inline">
-                <div class="form-group">
-                    <label for="reporte-fecha-inicio">Fecha Inicio:</label>
-                    <input type="date" id="reporte-fecha-inicio" />
-                </div>
-                <div class="form-group">
-                    <label for="reporte-fecha-fin">Fecha Fin:</label>
-                    <input type="date" id="reporte-fecha-fin" />
-                </div>
-                <button id="btn-generar-reporte" class="primary-btn">Generar Reporte</button>
-            </div>
-            <div id="reporte-resumen" class="reporte-container"></div>
-        </div>
-
-        <div class="cards-container">
-            <div class="card">
-                <h3>Top Animales por Ventas</h3>
-                <div id="top-ventas" class="reporte-container"></div>
-            </div>
-
-            <div class="card">
-                <h3>Top Animales por Compras</h3>
-                <div id="top-compras" class="reporte-container"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Rentabilidad</h3>
-            <div id="rentabilidad-container" class="reporte-container">
-                <div class="rentabilidad-valor">
-                    <span>Rentabilidad del periodo: </span>
-                    <span id="rentabilidad-valor">$0.00</span>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="header">
+    <h1><i class="fas fa-cow"></i> Sistema de Control de Ganado</h1>
 </div>
 
-<footer>
-    <p>Sistema de Control de Ganado &copy; 2025</p>
-</footer>
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('dashboard')" data-section="dashboard">
+        <i class="fas fa-chart-dashboard"></i> Dashboard
+    </button>
+    <button class="nav-tab" onclick="showSection('animales')" data-section="animales">
+        <i class="fas fa-cow"></i> Animales
+    </button>
+    <button class="nav-tab" onclick="showSection('compras')" data-section="compras">
+        <i class="fas fa-shopping-cart"></i> Compras
+    </button>
+    <button class="nav-tab" onclick="showSection('ventas')" data-section="ventas">
+        <i class="fas fa-hand-holding-usd"></i> Ventas
+    </button>
+    <button class="nav-tab" onclick="showSection('reportes')" data-section="reportes">
+        <i class="fas fa-chart-bar"></i> Reportes
+    </button>
+</div>
 
-<script src="js/app.js"></script>
+<div class="container">
+    <div id="alert" class="alert"></div>
 
-<!-- Añade esto antes del cierre del body -->
-<div id="loading-bar" class="loading-bar"></div>
-<script src="js/toast.js"></script>
-<script src="js/app.js"></script>
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="section active">
+        <h2><i class="fas fa-chart-dashboard"></i> Dashboard General</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-cow"></i>
+                <div class="stat-card-value" id="totalAnimales">0</div>
+                <div class="stat-card-label">Total Animales</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="stat-card-value" id="totalCompras">0</div>
+                <div class="stat-card-label">Total Compras</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-hand-holding-usd"></i>
+                <div class="stat-card-value" id="totalVentas">0</div>
+                <div class="stat-card-label">Total Ventas</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-balance-scale"></i>
+                <div class="stat-card-value" id="pesoTotal">0 kg</div>
+                <div class="stat-card-label">Peso Total Ganado</div>
+            </div>
+        </div>
+
+        <h3>Actividad Reciente</h3>
+        <div id="actividadReciente" class="data-grid">
+            <!-- Se llenará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Animales Section -->
+    <div id="animales" class="section">
+        <h2><i class="fas fa-cow"></i> Gestión de Animales</h2>
+
+        <form id="animalForm" class="form-grid">
+            <div class="form-group">
+                <label for="animalNombre">Nombre *</label>
+                <input type="text" id="animalNombre" required>
+            </div>
+            <div class="form-group">
+                <label for="animalTipo">Tipo *</label>
+                <select id="animalTipo" required>
+                    <option value="">Seleccionar tipo</option>
+                    <option value="bovino">Bovino</option>
+                    <option value="porcino">Porcino</option>
+                    <option value="ovino">Ovino</option>
+                    <option value="caprino">Caprino</option>
+                    <option value="equino">Equino</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="animalColor">Color</label>
+                <input type="text" id="animalColor">
+            </div>
+            <div class="form-group">
+                <label for="animalPeso">Peso (kg) *</label>
+                <input type="number" id="animalPeso" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="animalDescripcion">Descripción</label>
+                <textarea id="animalDescripcion" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Agregar Animal
+                </button>
+            </div>
+        </form>
+
+        <div id="animalesList" class="data-grid">
+            <!-- Se llenará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Compras Section -->
+    <div id="compras" class="section">
+        <h2><i class="fas fa-shopping-cart"></i> Gestión de Compras</h2>
+
+        <form id="compraForm" class="form-grid">
+            <div class="form-group">
+                <label for="compraAnimalId">Animal *</label>
+                <select id="compraAnimalId" required>
+                    <option value="">Seleccionar animal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="compraFecha">Fecha *</label>
+                <input type="date" id="compraFecha" required>
+            </div>
+            <div class="form-group">
+                <label for="compraPrecio">Precio Total *</label>
+                <input type="number" id="compraPrecio" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="compraDescripcion">Descripción</label>
+                <textarea id="compraDescripcion" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Registrar Compra
+                </button>
+            </div>
+        </form>
+
+        <div id="comprasList" class="data-grid">
+            <!-- Se llenará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Ventas Section -->
+    <div id="ventas" class="section">
+        <h2><i class="fas fa-hand-holding-usd"></i> Gestión de Ventas</h2>
+
+        <form id="ventaForm" class="form-grid">
+            <div class="form-group">
+                <label for="ventaAnimalId">Animal *</label>
+                <select id="ventaAnimalId" required>
+                    <option value="">Seleccionar animal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ventaFecha">Fecha *</label>
+                <input type="date" id="ventaFecha" required>
+            </div>
+            <div class="form-group">
+                <label for="ventaPrecio">Precio Total *</label>
+                <input type="number" id="ventaPrecio" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="ventaPeso">Peso Total (kg) *</label>
+                <input type="number" id="ventaPeso" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="ventaDescuento">% Descuento por Carga</label>
+                <input type="number" id="ventaDescuento" step="0.01" min="0" max="100" value="0">
+            </div>
+            <div class="form-group">
+                <label for="ventaDescripcion">Descripción</label>
+                <textarea id="ventaDescripcion" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Registrar Venta
+                </button>
+            </div>
+        </form>
+
+        <div id="ventasList" class="data-grid">
+            <!-- Se llenará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Reportes Section -->
+    <div id="reportes" class="section">
+        <h2><i class="fas fa-chart-bar"></i> Reportes y Análisis</h2>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="reporteFechaInicio">Fecha Inicio</label>
+                <input type="date" id="reporteFechaInicio">
+            </div>
+            <div class="form-group">
+                <label for="reporteFechaFin">Fecha Fin</label>
+                <input type="date" id="reporteFechaFin">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn" onclick="generarReporte()">
+                    <i class="fas fa-chart-line"></i> Generar Reporte
+                </button>
+            </div>
+        </div>
+
+        <div id="reporteContent" class="stats-grid">
+            <!-- Se llenará dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '/api';
+    let animales = [];
+    let compras = [];
+    let ventas = [];
+
+    // Funciones de navegación
+    function showSection(sectionId) {
+        // Ocultar todas las secciones
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Remover clase active de todos los tabs
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Mostrar sección seleccionada
+        document.getElementById(sectionId).classList.add('active');
+
+        // Activar tab correspondiente
+        document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+        // Cargar datos según la sección
+        switch(sectionId) {
+            case 'dashboard':
+                loadDashboard();
+                break;
+            case 'animales':
+                loadAnimales();
+                break;
+            case 'compras':
+                loadCompras();
+                loadAnimalesSelect('compraAnimalId');
+                break;
+            case 'ventas':
+                loadVentas();
+                loadAnimalesSelect('ventaAnimalId');
+                break;
+        }
+    }
+
+    // Funciones de alerta
+    function showAlert(message, type = 'success') {
+        const alert = document.getElementById('alert');
+        alert.textContent = message;
+        alert.className = `alert ${type}`;
+        alert.style.display = 'block';
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 5000);
+    }
+
+    // Funciones de carga de datos
+    async function loadAnimales() {
+        try {
+            const response = await fetch(`${API_BASE}/animales`);
+            animales = await response.json();
+            displayAnimales();
+            updateStats();
+        } catch (error) {
+            showAlert('Error al cargar animales: ' + error.message, 'error');
+        }
+    }
+
+    async function loadCompras() {
+        try {
+            const response = await fetch(`${API_BASE}/compras`);
+            compras = await response.json();
+            displayCompras();
+            updateStats();
+        } catch (error) {
+            showAlert('Error al cargar compras: ' + error.message, 'error');
+        }
+    }
+
+    async function loadVentas() {
+        try {
+            const response = await fetch(`${API_BASE}/ventas`);
+            ventas = await response.json();
+            displayVentas();
+            updateStats();
+        } catch (error) {
+            showAlert('Error al cargar ventas: ' + error.message, 'error');
+        }
+    }
+
+    async function loadAnimalesSelect(selectId) {
+        await loadAnimales();
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">Seleccionar animal</option>';
+        animales.forEach(animal => {
+            select.innerHTML += `<option value="${animal.id}">${animal.nombre} - ${animal.tipo} (${animal.peso}kg)</option>`;
+        });
+    }
+
+    async function loadDashboard() {
+        await Promise.all([loadAnimales(), loadCompras(), loadVentas()]);
+        updateStats();
+        displayActividad();
+    }
+
+    // Funciones de display
+    function displayAnimales() {
+        const container = document.getElementById('animalesList');
+        container.innerHTML = '';
+
+        animales.forEach(animal => {
+            container.innerHTML += `
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <div class="data-card-title">${animal.nombre}</div>
+                            <div class="data-card-actions">
+                                <button class="btn btn-danger" onclick="deleteAnimal(${animal.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="data-card-content">
+                            <div class="data-field">
+                                <div class="data-field-label">Tipo</div>
+                                <div class="data-field-value">${animal.tipo || 'N/A'}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Color</div>
+                                <div class="data-field-value">${animal.color || 'N/A'}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Peso</div>
+                                <div class="data-field-value">${animal.peso} kg</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Descripción</div>
+                                <div class="data-field-value">${animal.descripcion || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        });
+    }
+
+    function displayCompras() {
+        const container = document.getElementById('comprasList');
+        container.innerHTML = '';
+
+        compras.forEach(compra => {
+            const animal = animales.find(a => a.id === compra.animal?.id);
+            container.innerHTML += `
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <div class="data-card-title">Compra #${compra.id}</div>
+                            <div class="data-card-actions">
+                                <button class="btn btn-danger" onclick="deleteCompra(${compra.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="data-card-content">
+                            <div class="data-field">
+                                <div class="data-field-label">Animal</div>
+                                <div class="data-field-value">${animal?.nombre || 'N/A'}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Fecha</div>
+                                <div class="data-field-value">${compra.fecha || 'N/A'}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Precio Total</div>
+                                <div class="data-field-value">$${compra.precioTotal || 0}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Descripción</div>
+                                <div class="data-field-value">${compra.descripcion || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        });
+    }
+
+    function displayVentas() {
+        const container = document.getElementById('ventasList');
+        container.innerHTML = '';
+
+        ventas.forEach(venta => {
+            const animal = animales.find(a => a.id === venta.animal?.id);
+            container.innerHTML += `
+                    <div class="data-card">
+                        <div class="data-card-header">
+                            <div class="data-card-title">Venta #${venta.id}</div>
+                            <div class="data-card-actions">
+                                <button class="btn btn-danger" onclick="deleteVenta(${venta.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="data-card-content">
+                            <div class="data-field">
+                                <div class="data-field-label">Animal</div>
+                                <div class="data-field-value">${animal?.nombre || 'N/A'}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Fecha</div>
+                                <div class="data-field-value">${venta.fecha || 'N/A'}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Precio Total</div>
+                                <div class="data-field-value">$${venta.precioTotal || 0}</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Peso Total</div>
+                                <div class="data-field-value">${venta.pesoTotal || 0} kg</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">% Descuento</div>
+                                <div class="data-field-value">${venta.porcentajeDescuento || 0}%</div>
+                            </div>
+                            <div class="data-field">
+                                <div class="data-field-label">Descripción</div>
+                                <div class="data-field-value">${venta.descripcion || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        });
+    }
+
+    function updateStats() {
+        document.getElementById('totalAnimales').textContent = animales.length;
+        document.getElementById('totalCompras').textContent = compras.length;
+        document.getElementById('totalVentas').textContent = ventas.length;
+
+        const pesoTotal = animales.reduce((sum, animal) => sum + (animal.peso || 0), 0);
+        document.getElementById('pesoTotal').textContent = `${pesoTotal.toFixed(2)} kg`;
+    }
+
+    function displayActividad() {
+        const container = document.getElementById('actividadReciente');
+        container.innerHTML = '';
+
+        // Mostrar últimas actividades (simulado)
+        if (animales.length > 0) {
+            container.innerHTML += `
+                    <div class="data-card">
+                        <div class="data-card-title">Último Animal Registrado</div>
+                        <div class="data-card-content">
+                            <div class="data-field">
+                                <div class="data-field-value">${animales[animales.length - 1]?.nombre || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        }
+    }
+
+    // Event Listeners para formularios
+    document.getElementById('animalForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            nombre: document.getElementById('animalNombre').value,
+            tipo: document.getElementById('animalTipo').value,
+            color: document.getElementById('animalColor').value,
+            peso: parseFloat(document.getElementById('animalPeso').value),
+            descripcion: document.getElementById('animalDescripcion').value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/animales`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                document.getElementById('animalForm').reset();
+                showAlert('Animal agregado exitosamente');
+                loadAnimales();
+            } else {
+                const error = await response.text();
+                showAlert('Error al agregar animal: ' + error, 'error');
+            }
+        } catch (error) {
+            showAlert('Error al agregar animal: ' + error.message, 'error');
+        }
+    });
+
+    document.getElementById('compraForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            animalId: parseInt(document.getElementById('compraAnimalId').value),
+            fecha: document.getElementById('compraFecha').value,
+            precioTotal: parseFloat(document.getElementById('compraPrecio').value),
+            descripcion: document.getElementById('compraDescripcion').value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/compras`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                document.getElementById('compraForm').reset();
+                showAlert('Compra registrada exitosamente');
+                loadCompras();
+            } else {
+                const error = await response.text();
+                showAlert('Error al registrar compra: ' + error, 'error');
+            }
+        } catch (error) {
+            showAlert('Error al registrar compra: ' + error.message, 'error');
+        }
+    });
+
+    document.getElementById('ventaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            animalId: parseInt(document.getElementById('ventaAnimalId').value),
+            fecha: document.getElementById('ventaFecha').value,
+            precioTotal: parseFloat(document.getElementById('ventaPrecio').value),
+            pesoTotal: parseFloat(document.getElementById('ventaPeso').value),
+            porcentajeDescuento: parseFloat(document.getElementById('ventaDescuento').value) || 0,
+            descripcion: document.getElementById('ventaDescripcion').value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/ventas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                document.getElementById('ventaForm').reset();
+                showAlert('Venta registrada exitosamente');
+                loadVentas();
+            } else {
+                const error = await response.text();
+                showAlert('Error al registrar venta: ' + error, 'error');
+            }
+        } catch (error) {
+            showAlert('Error al registrar venta: ' + error.message, 'error');
+        }
+    });
+
+    // Funciones de eliminación
+    async function deleteAnimal(id) {
+        if (!confirm('¿Está seguro de eliminar este animal?')) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/animales/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                showAlert('Animal eliminado exitosamente');
+                loadAnimales();
+            } else {
+                showAlert('Error al eliminar animal', 'error');
+            }
+        } catch (error) {
+            showAlert('Error al eliminar animal: ' + error.message, 'error');
+        }
+    }
+
+    async function deleteCompra(id) {
+        if (!confirm('¿Está seguro de eliminar esta compra?')) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/compras/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                showAlert('Compra eliminada exitosamente');
+                loadCompras();
+            } else {
+                showAlert('Error al eliminar compra', 'error');
+            }
+        } catch (error) {
+            showAlert('Error al eliminar compra: ' + error.message, 'error');
+        }
+    }
+
+    async function deleteVenta(id) {
+        if (!confirm('¿Está seguro de eliminar esta venta?')) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/ventas/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                showAlert('Venta eliminada exitosamente');
+                loadVentas();
+            } else {
+                showAlert('Error al eliminar venta', 'error');
+            }
+        } catch (error) {
+            showAlert('Error al eliminar venta: ' + error.message, 'error');
+        }
+    }
+
+    // Función para generar reportes
+    async function generarReporte() {
+        const fechaInicio = document.getElementById('reporteFechaInicio').value;
+        const fechaFin = document.getElementById('reporteFechaFin').value;
+
+        await Promise.all([loadAnimales(), loadCompras(), loadVentas()]);
+
+        let comprasFiltradas = compras;
+        let ventasFiltradas = ventas;
+
+        if (fechaInicio) {
+            comprasFiltradas = compras.filter(c => c.fecha >= fechaInicio);
+            ventasFiltradas = ventas.filter(v => v.fecha >= fechaInicio);
+        }
+
+        if (fechaFin) {
+            comprasFiltradas = comprasFiltradas.filter(c => c.fecha <= fechaFin);
+            ventasFiltradas = ventasFiltradas.filter(v => v.fecha <= fechaFin);
+        }
+
+        const totalCompras = comprasFiltradas.reduce((sum, c) => sum + (c.precioTotal || 0), 0);
+        const totalVentas = ventasFiltradas.reduce((sum, v) => sum + (v.precioTotal || 0), 0);
+        const ganancia = totalVentas - totalCompras;
+        const pesoVendido = ventasFiltradas.reduce((sum, v) => sum + (v.pesoTotal || 0), 0);
+
+        document.getElementById('reporteContent').innerHTML = `
+                <div class="stat-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="stat-card-value">${totalCompras.toFixed(2)}</div>
+                    <div class="stat-card-label">Total Compras</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <div class="stat-card-value">${totalVentas.toFixed(2)}</div>
+                    <div class="stat-card-label">Total Ventas</div>
+                </div>
+                <div class="stat-card" style="background: ${ganancia >= 0 ? 'linear-gradient(135deg, #28a745, #20c997)' : 'linear-gradient(135deg, #dc3545, #c82333)'}">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="stat-card-value">${ganancia.toFixed(2)}</div>
+                    <div class="stat-card-label">${ganancia >= 0 ? 'Ganancia' : 'Pérdida'}</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-weight"></i>
+                    <div class="stat-card-value">${pesoVendido.toFixed(2)} kg</div>
+                    <div class="stat-card-label">Peso Vendido</div>
+                </div>
+            `;
+
+        showAlert('Reporte generado exitosamente');
+    }
+
+    // Inicializar fechas por defecto
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('compraFecha').value = today;
+        document.getElementById('ventaFecha').value = today;
+
+        // Cargar dashboard inicial
+        loadDashboard();
+    });
+</script>
 </body>
 </html>

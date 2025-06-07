@@ -1,38 +1,55 @@
 package com.example.ControlDeGanado.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import java.time.LocalDate;
-import com.example.ControlDeGanado.model.Venta.TipoVenta;
 
 public class VentaDTO {
+    @NotNull(message = "La fecha es obligatoria")
     private LocalDate fecha;
-    private TipoVenta tipoVenta = TipoVenta.UNITARIA;
-    private Double precioTotal;
-    private Double precioUnitario;
-    private Double pesoTotal;
-    private Double precioPorKilo;
-    private Double porcentajeDescuento = 0.0;
-    private Double descuentoMateriaOrganica = 0.0;
-    private Integer cantidad = 1;
-    private Long animalId;
-    private String tipoAnimalLote;
-    private String razaAnimalLote;
-    private String descripcion;
-    private String moneda = "PYG";
 
+    @NotNull(message = "El precio total es obligatorio")
+    @Positive(message = "El precio debe ser mayor que cero")
+    private Double precioTotal;
+
+    @NotNull(message = "El peso total es obligatorio")
+    @Positive(message = "El peso debe ser mayor que cero")
+    private Double pesoTotal;
+
+    @NotNull(message = "El porcentaje de descuento es obligatorio")
+    @DecimalMin(value = "0.0", message = "El porcentaje de descuento no puede ser negativo")
+    @DecimalMax(value = "100.0", message = "El porcentaje de descuento no puede ser mayor a 100")
+    private Double porcentajeDescuento;
+
+    @NotNull(message = "El animal es obligatorio")
+    private Long animalId;
+
+    private String descripcion;
+
+    // Constructor vacío
+    public VentaDTO() {}
+
+    // Constructor con parámetros
+    public VentaDTO(LocalDate fecha, Double precioTotal, Double pesoTotal,
+                    Double porcentajeDescuento, Long animalId, String descripcion) {
+        this.fecha = fecha;
+        this.precioTotal = precioTotal;
+        this.pesoTotal = pesoTotal;
+        this.porcentajeDescuento = porcentajeDescuento;
+        this.animalId = animalId;
+        this.descripcion = descripcion;
+    }
+
+    // Getters y setters
     public LocalDate getFecha() {
         return fecha;
     }
 
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
-    }
-
-    public TipoVenta getTipoVenta() {
-        return tipoVenta;
-    }
-
-    public void setTipoVenta(TipoVenta tipoVenta) {
-        this.tipoVenta = tipoVenta;
     }
 
     public Double getPrecioTotal() {
@@ -43,28 +60,12 @@ public class VentaDTO {
         this.precioTotal = precioTotal;
     }
 
-    public Double getPrecioUnitario() {
-        return precioUnitario;
-    }
-
-    public void setPrecioUnitario(Double precioUnitario) {
-        this.precioUnitario = precioUnitario;
-    }
-
     public Double getPesoTotal() {
         return pesoTotal;
     }
 
     public void setPesoTotal(Double pesoTotal) {
         this.pesoTotal = pesoTotal;
-    }
-
-    public Double getPrecioPorKilo() {
-        return precioPorKilo;
-    }
-
-    public void setPrecioPorKilo(Double precioPorKilo) {
-        this.precioPorKilo = precioPorKilo;
     }
 
     public Double getPorcentajeDescuento() {
@@ -75,44 +76,12 @@ public class VentaDTO {
         this.porcentajeDescuento = porcentajeDescuento;
     }
 
-    public Double getDescuentoMateriaOrganica() {
-        return descuentoMateriaOrganica;
-    }
-
-    public void setDescuentoMateriaOrganica(Double descuentoMateriaOrganica) {
-        this.descuentoMateriaOrganica = descuentoMateriaOrganica;
-    }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-    }
-
     public Long getAnimalId() {
         return animalId;
     }
 
     public void setAnimalId(Long animalId) {
         this.animalId = animalId;
-    }
-
-    public String getTipoAnimalLote() {
-        return tipoAnimalLote;
-    }
-
-    public void setTipoAnimalLote(String tipoAnimalLote) {
-        this.tipoAnimalLote = tipoAnimalLote;
-    }
-
-    public String getRazaAnimalLote() {
-        return razaAnimalLote;
-    }
-
-    public void setRazaAnimalLote(String razaAnimalLote) {
-        this.razaAnimalLote = razaAnimalLote;
     }
 
     public String getDescripcion() {
@@ -123,11 +92,15 @@ public class VentaDTO {
         this.descripcion = descripcion;
     }
 
-    public String getMoneda() {
-        return moneda;
-    }
-
-    public void setMoneda(String moneda) {
-        this.moneda = moneda;
+    @Override
+    public String toString() {
+        return "VentaDTO{" +
+                "fecha=" + fecha +
+                ", precioTotal=" + precioTotal +
+                ", pesoTotal=" + pesoTotal +
+                ", porcentajeDescuento=" + porcentajeDescuento +
+                ", animalId=" + animalId +
+                ", descripcion='" + descripcion + '\'' +
+                '}';
     }
 }

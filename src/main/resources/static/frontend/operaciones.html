@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Ganado - Operaciones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Barra de carga -->
+<div id="loading-bar" class="loading-bar"></div>
+
+<!-- Overlay de carga -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <h1><i class="fas fa-cow"></i> Control de Ganado</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="animales.html"><i class="fas fa-horse"></i> Animales</a></li>
+                <li><a href="operaciones.html" class="active"><i class="fas fa-exchange-alt"></i> Operaciones</a></li>
+                <li><a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Contenido principal -->
+<div class="container">
+    <section id="operaciones-section" class="fade-in">
+        <h2>Gestión de Operaciones</h2>
+
+        <!-- Tabs de operaciones -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="compras">
+                <i class="fas fa-shopping-cart"></i> Compras
+            </button>
+            <button class="tab-button" data-tab="ventas">
+                <i class="fas fa-tag"></i> Ventas
+            </button>
+        </div>
+
+        <!-- Tab de Compras -->
+        <div class="tab-content active" id="tab-compras">
+            <!-- Estadísticas rápidas de compras -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-value" id="total-compras">0</div>
+                    <div class="stat-label">Compras Totales</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-value" id="monto-compras">₲ 0</div>
+                    <div class="stat-label">Monto Total</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="stat-value" id="compras-recientes">0</div>
+                    <div class="stat-label">Últimos 30 días</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value" id="precio-promedio-compra">₲ 0</div>
+                    <div class="stat-label">Precio Promedio</div>
+                </div>
+            </div>
+
+            <!-- Búsqueda y filtros de compras -->
+            <div class="card">
+                <h3>Búsqueda y Filtros</h3>
+                <div class="filter-form">
+                    <div class="form-group">
+                        <label for="compra-fecha-inicio">Desde:</label>
+                        <input type="date" id="compra-fecha-inicio" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="compra-fecha-fin">Hasta:</label>
+                        <input type="date" id="compra-fecha-fin" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="compra-tipo-animal">Tipo de Animal:</label>
+                        <select id="compra-tipo-animal" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="Bovino">Bovino</option>
+                            <option value="Porcino">Porcino</option>
+                            <option value="Ovino">Ovino</option>
+                            <option value="Caprino">Caprino</option>
+                            <option value="Equino">Equino</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button id="btn-filtrar-compras" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado de compras -->
+            <div class="card">
+                <div class="card-header-actions">
+                    <h3>Listado de Compras</h3>
+                    <button id="btn-nueva-compra" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nueva Compra
+                    </button>
+                </div>
+
+                <div id="compras-container">
+                    <!-- Aquí se cargarán dinámicamente las compras -->
+                    <table class="data-table" id="tabla-compras">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Animal/Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Se carga dinámicamente -->
+                        <tr>
+                            <td colspan="6" class="text-center">Cargando...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container">
+                    <button id="btn-anterior-compras" class="btn btn-secondary" disabled>
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span id="paginacion-compras-info">Página 1 de 1</span>
+                    <button id="btn-siguiente-compras" class="btn btn-secondary" disabled>
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Formulario de compra (inicialmente oculto) -->
+            <div class="card" id="compra-form-card" style="display: none;">
+                <div class="card-header-actions">
+                    <h3 id="compra-form-title">Nueva Compra</h3>
+                    <button id="btn-cerrar-compra-form" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+
+                <form id="compra-form" class="form">
+                    <input type="hidden" id="compra-id">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="compra-tipo">Tipo de Compra:</label>
+                            <select id="compra-tipo" class="form-control" required>
+                                <option value="UNITARIA">Compra Unitaria</option>
+                                <option value="LOTE">Compra por Lote</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="compra-moneda">Moneda:</label>
+                            <select id="compra-moneda" class="form-control">
+                                <option value="PYG" selected>Guaraníes (₲)</option>
+                                <option value="USD">Dólares ($)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="compra-fecha">Fecha:</label>
+                            <input type="date" id="compra-fecha" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row animal-unitario">
+                        <div class="form-group col-md-12">
+                            <label for="compra-animalId">Animal:</label>
+                            <select id="compra-animalId" class="form-control animal-select" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row animal-lote" style="display: none;">
+                        <div class="form-group col-md-6">
+                            <label for="compra-tipo-animal-lote">Tipo de Animal:</label>
+                            <input type="text" id="compra-tipo-animal-lote" class="form-control" placeholder="Ej: Bovino, Porcino">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="compra-raza-animal-lote">Raza:</label>
+                            <input type="text" id="compra-raza-animal-lote" class="form-control" placeholder="Opcional">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="compra-cantidad">Cantidad:</label>
+                            <input type="number" id="compra-cantidad" class="form-control" value="1" min="1" required>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="compra-precio-unitario">Precio Unitario:</label>
+                            <div class="input-group">
+                                <input type="number" id="compra-precio-unitario" class="form-control currency-input" step="1" min="0" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text currency-symbol">₲</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="compra-precio-total">Precio Total:</label>
+                            <div class="input-group">
+                                <input type="number" id="compra-precio-total" class="form-control currency-input" step="1" min="0" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text currency-symbol">₲</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="compra-peso-total">Peso Total (kg):</label>
+                            <input type="number" id="compra-peso-total" class="form-control" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="compra-descripcion">Descripción:</label>
+                        <textarea id="compra-descripcion" class="form-control" rows="3" placeholder="Información adicional"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-sync"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tab de Ventas -->
+        <div class="tab-content" id="tab-ventas">
+            <!-- Estadísticas rápidas de ventas -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tag"></i></div>
+                    <div class="stat-value" id="total-ventas">0</div>
+                    <div class="stat-label">Ventas Totales</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-value" id="monto-ventas">₲ 0</div>
+                    <div class="stat-label">Monto Total</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="stat-value" id="ventas-recientes">0</div>
+                    <div class="stat-label">Últimos 30 días</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value" id="precio-promedio-venta">₲ 0</div>
+                    <div class="stat-label">Precio Promedio</div>
+                </div>
+            </div>
+
+            <!-- Búsqueda y filtros de ventas -->
+            <div class="card">
+                <h3>Búsqueda y Filtros</h3>
+                <div class="filter-form">
+                    <div class="form-group">
+                        <label for="venta-fecha-inicio">Desde:</label>
+                        <input type="date" id="venta-fecha-inicio" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="venta-fecha-fin">Hasta:</label>
+                        <input type="date" id="venta-fecha-fin" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="venta-tipo-animal">Tipo de Animal:</label>
+                        <select id="venta-tipo-animal" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="Bovino">Bovino</option>
+                            <option value="Porcino">Porcino</option>
+                            <option value="Ovino">Ovino</option>
+                            <option value="Caprino">Caprino</option>
+                            <option value="Equino">Equino</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button id="btn-filtrar-ventas" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado de ventas -->
+            <div class="card">
+                <div class="card-header-actions">
+                    <h3>Listado de Ventas</h3>
+                    <button id="btn-nueva-venta" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nueva Venta
+                    </button>
+                </div>
+
+                <div id="ventas-container">
+                    <!-- Aquí se cargarán dinámicamente las ventas -->
+                    <table class="data-table" id="tabla-ventas">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Animal/Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Peso</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Se carga dinámicamente -->
+                        <tr>
+                            <td colspan="7" class="text-center">Cargando...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container">
+                    <button id="btn-anterior-ventas" class="btn btn-secondary" disabled>
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span id="paginacion-ventas-info">Página 1 de 1</span>
+                    <button id="btn-siguiente-ventas" class="btn btn-secondary" disabled>
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Formulario de venta (inicialmente oculto) -->
+            <div class="card" id="venta-form-card" style="display: none;">
+                <div class="card-header-actions">
+                    <h3 id="venta-form-title">Nueva Venta</h3>
+                    <button id="btn-cerrar-venta-form" class="btn btn-secondary">
